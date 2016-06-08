@@ -1,0 +1,199 @@
+#Testing if a number is prime
+
+(define (prime-test number)
+  (= number (help-pt number 2))  
+  )
+(define (help-pt n1 n2)
+  (cond
+    ((= n1 1) n1);special case for 1 because we start n2 on 2
+    ((= n1 n2) n1 );
+    ((= (remainder n1 n2) 0) n2);just returning whatever except n1, 
+    (else (help-pt n1 (+ n2 1)))
+    )
+  )
+  
+  #Modo
+  
+  (define (modo base ex)
+  (cond ((= ex 0) 1)
+        (else (remainder (fast-expt base ex) ex));returns the remainder
+        ))
+        
+        
+        
+#if the square of the divisor is bigger than n then return n
+#if the divisor is dividible with n then return the divisor
+#otherwise iterate through it again by checking for a new divisor which is the old value +1
+        
+  (define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor) n) n)        
+  ((divides? test-divisor n) test-divisor)
+        (else (find-divisor n (+ test-divisor 1)))))
+
+
+#Invert a list of elements
+
+#By recursion
+
+(define (reverse-list-rec lst)
+  (if (null? lst)
+      ()
+      (append (reverse-list-rec (cdr lst)) (list(car lst))
+              )))
+
+
+#By iteration
+
+(define (reverse-list-it lst)
+  (reverse-list-it-help lst (list)
+                        )
+  )
+(define (reverse-list-it-help lst newlst)
+  (cond 
+    ((null? lst)
+     newlst)
+    (else
+     (let ((i (append (list(car lst)) newlst)));create a new list and save it to variable i
+       (reverse-list-it-help (cdr lst) i)     
+       ))))
+
+
+
+#Return number of elements from list
+
+(define (n-first n lst)
+  (if (= n 0)
+      ()
+      (cons (car lst) (n-first (- n 1) (cdr lst)))))
+
+#call by: i.e (n-first 4 (list 1 2 3 4 5))
+
+#From element n1 to n2
+
+(define(sub-list n1 n2 lst)
+  (sub-list-help n1 n2 lst 0)
+  )
+
+(define (sub-list-help n1 n2 lst counter)
+  (cond
+    ((= n2 (- counter 1));base
+       ()
+       )
+    ((<= n1 counter)
+       (append (list(car lst)) (sub-list-help n1 n2 (cdr lst) (+ counter 1)))
+       )
+    (else (sub-list-help n1 n2 (cdr lst) (+ counter 1)))
+    ))
+
+#Accumulating lists
+#Starting of with:
+
+(define (accumulate op init lst)
+  (if (null? lst)
+  init
+  (op (car lst)
+    (accumulate op init
+      (cdr lst)))))
+
+#.. change the procedure by adding for example
+
+#length
+(define (length2 lst)
+  (accumulate (lambda(x y) (+ 1 y)) 0 lst)
+  )
+
+
+#append
+(define(append2 lst addtolist)
+  (accumulate (lambda(x y) (cons x y)) (list addtolist) lst)
+  )
+
+
+#map
+(define (map2 oper lst)
+  (accumulate (lambda(x y) (cons (double x) y)) () lst)
+  )
+
+
+
+#Fibonacci, both iterative and recursive:
+
+(define (fib-rev n)
+  (cond
+    ((= n 0) 0)
+    ((= n 1) 1)
+    (else (+ (fib-rev (- n 1))
+             (fib-rev (- n 2))
+             ))
+    )
+  )
+#-------------------------------------------------------
+
+(define (fib-it n)
+  (fib-it-help 1 0 n))
+
+(define (fib-it-help a b counter)
+  (if (= counter 0)
+      b
+      (fib-it-help (+ a b) a (- counter 1))))
+#------------------------------------------------
+
+
+(define(fib-list n)
+  (if (= n 0) (list 0)
+  (append (list 0) (fib-list-help 1 0 (- n 1))
+  )
+  ))
+
+(define(fib-list-help a b n)
+  (if (= n 0)
+      ()
+      (append (list(+ a b)) (fib-list-help b (+ a b) (- n 1)))
+
+#Finding depth of a tree
+
+(begin (set! x 5) (+ x 1))    =>  6     #begin! is for reading from left to right
+  (define (depth x) (begin
+        (if (or (null? x) (not (pair? x) ) )
+            0
+            (max ( + 1 (depth (car x)) )
+                 (depth (cdr x))
+            ))))
+            
+  #Binary search trees
+  
+  (define (entry tree) (car tree))
+(define (left-branch tree) (cadr tree))
+(define (right-branch tree) (caddr tree))
+(define (make-tree entry left right)
+(list entry left right))
+
+(entry (list 1 2 3))
+(left-branch (list 1 2 3))
+(right-branch(list 1 2 3))
+
+(make-tree 3 5 7)
+
+
+(define (adjoin-set x set)
+  (cond ((null? set) (make-tree x '() '()))
+        ((= x (entry set)) set)
+        ((< x (entry set))
+         (make-tree (entry set)
+                    (adjoin-set x (left-branch set))
+                    (right-branch set)))
+        ((> x (entry set))
+         (make-tree (entry set)
+                    (left-branch set)
+                    (adjoin-set x (right-branch set))))))
+
+(adjoin-set 3 '())
+(adjoin-set 3 '())
+
+(adjoin-set 8 (adjoin-set 3 '()))
+
+(list 5 7 3 4 8 2)
+
+(adjoin-set 2 (adjoin-set 8 (adjoin-set 4 (adjoin-set 3 (adjoin-set 7 (adjoin-set 5 '()))))))
+
+
