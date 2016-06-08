@@ -1,3 +1,6 @@
+
+#A collection of useful functions in Scheme (Lisp)
+
 #Testing if a number is prime
 
 (define (prime-test number)
